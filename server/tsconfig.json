@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    /* Opciones Básicas */
+    "target": "ES2023",                                  /* La versión de JavaScript a la que se traducirá. Node 18 soporta ES2022 perfecto. */
+    "module": "CommonJS",                                /* El sistema de módulos estándar de Node.js */
+    "rootDir": "./src",                                  /* Dónde vive tu código fuente TypeScript */
+    "outDir": "./dist",                                  /* Dónde escupirá Render el código JavaScript final */
+    
+    /* Opciones de Estrictez (Aquí está la magia de TS) */
+    "strict": true,                                      /* Activa todas las validaciones estrictas. ¡Altamente recomendado! */
+    "noImplicitAny": true,                               /* Te obliga a definir qué tipo de dato es cada variable */
+    "strictNullChecks": true,                            /* Evita que tu app truene por leer propiedades de algo que es 'null' o 'undefined' */
+    
+    /* Opciones de Interoperabilidad */
+    "esModuleInterop": true,                             /* Permite importar librerías de JS antiguo (como Express) sin errores raros */
+    "forceConsistentCasingInFileNames": true,            /* Evita errores de mayúsculas/minúsculas al hacer deploy en Linux (Render) */
+    "skipLibCheck": true                                 /* Acelera la compilación ignorando los tipos internos de la carpeta node_modules */
+  },
+  "include": [
+    "src/**/*"                                           /* Solo compila lo que esté dentro de la carpeta src */
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts"
+  ]
+}
