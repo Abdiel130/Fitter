@@ -1,134 +1,153 @@
-# 🏋️ Fitter - Gym Tracker App (Local-First)
+# 🏋️ Fitter - Sync & Backup Server API (Laravel + PostgreSQL)
 
-Fitter es una aplicación web progresiva (PWA) diseñada para gestionar rutinas de gimnasio. Construida con una arquitectura **Local-First**, permite registrar ejercicios y rutinas sin conexión a internet utilizando almacenamiento interno del dispositivo, para posteriormente sincronizarse con un servidor en la nube.
+[![Laravel](https://img.shields.io/badge/Laravel-11.x-FF2D20?style=for-the-badge&logo=laravel)](https://laravel.com)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=for-the-badge&logo=postgresql)](https://www.postgresql.org)
+[![Docker Sail](https://img.shields.io/badge/Docker_Sail-Enabled-2496ED?style=for-the-badge&logo=docker)](https://laravel.com/docs/sail)
+[![SemVer](https://img.shields.io/badge/Version-1.0.0-blue?style=for-the-badge)](CHANGELOG.md)
 
----
-
-## 🛠️ Tecnologías (Stack)
-
-### Frontend
-- ⚛️ **React + Vite** (TypeScript)
-- 🗄️ **Dexie.js** (Base de datos local / IndexedDB)
-
-### Backend
-- 🟢 **Node.js v22** (TypeScript)
-- 🚂 **Express.js**
-- 🍃 **Mongoose**
-
-### Infraestructura & Datos
-- 🍃 **MongoDB** (Atlas en Producción / Contenedor en Desarrollo)
-- 🐳 **Docker & Docker Compose**
-- ☁️ **Render** (Hosting previsto)
+**Fitter Server** es la API backend de autenticación, respaldo y sincronización para el ecosistema **Offline-First** de seguimiento de gimnasio, nutrición y hábitos.
 
 ---
 
-## 📋 Requisitos Previos
+## 📐 Arquitectura del Sistema (Offline-First)
 
-Para correr este proyecto en local de manera óptima, especialmente si estás en Windows, se recomienda usar **WSL2 (Windows Subsystem for Linux)**.
+El ecosistema de Fitter opera con una arquitectura **Offline-First**:
 
-Asegúrate de tener instalado lo siguiente antes de empezar:
+1. **Cliente Móvil (Android / App):**
+   - Ejecuta el 100% de la experiencia de usuario sin necesidad de conexión a internet.
+   - Procesa la lógica interactiva en tiempo real: temporizadores de descanso, calculadora de 1RM, calculadora de discos y precarga de pesos históricos.
+   - Persiste los datos localmente en el dispositivo.
 
-1. **Docker Desktop:** Instalado y configurado para integrarse con tu distribución de WSL2.
-2. **Git:** Para clonar el repositorio.
-3. **NVM (Node Version Manager):** Es crucial instalar Node *dentro* de tu entorno Linux (WSL), no en Windows, para evitar problemas de rutas cruzadas.
+2. **Servidor API Backend (Este Repositorio):**
+   - **Autenticación:** Gestión segura de usuarios y sesiones vía Laravel Sanctum.
+   - **Sincronización & Respaldo CRUD:** Endpoint API unificado para respaldar la información del usuario en PostgreSQL y sincronizar cambios entre múltiples dispositivos sin pérdida de datos.
 
-```bash
-# Instalar NVM (Si no lo tienes)
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-source ~/.bashrc
-```
+---
 
-Instala la versión de Node requerida para este proyecto copiando y pegando estos comandos:
+## 💡 Dominio del Proyecto y Funcionalidades Respaldadas
 
-```bash
-nvm install 22
-nvm use 22
-nvm alias default 22
-```
+El modelo de base de datos en PostgreSQL ([Fitter.sql](file:///home/abdiel/projects/personal/Fitter/Fitter.sql)) y el servidor API respaldan las siguientes áreas funcionales:
+
+### 🏋️ Semanals Workouts (Rutinas & Secuencias Rotativas)
+- **Secuencias Cíclicas:** Creación de rutinas compuestas por secuencias de días de entrenamiento (ej. PPL 4 Días con Enfoque Dorsal).
+- **Flexibilidad de Enfoques:** Alternancia entre secuencias semanales (ej. *Semana Enfoque Empuje* vs *Semana Enfoque Jale*).
+- **Puntero de Secuencia:** Seguimiento del día que corresponde en el ciclo (`active_sequence_index`).
+
+### 📐 Antropometría y Progreso Físico
+- **Historial de Peso Corporal:** Registro diario de peso en ayunas (`weight_kg`).
+- **Medidas Corporales Completas:** Seguimiento de cuello, pecho, cintura/ombligo, caderas, bíceps, muslos y pantorrillas.
+- **Fotos de Progreso:** Almacenamiento organizado por pose (`FRONT`, `BACK`, `LEFT`, `RIGHT`) vinculadas a cada registro antropométrico.
+- **% Grasa Corporal:** Estimación manual o calculada.
+
+### ⚡ Training & Ejercicios
+- **Historial Precargado & 1RM:** Almacenamiento de sets completados (`weight_kg`, `reps_completed`, `rpe`, `calculated_1rm`, `is_personal_record`).
+- **Tipos de Series:** Soporte para series `NORMAL`, `WARMUP`, `DROPSET` y `FAILURE`.
+- **Ejercicios Sustitutos / Variantes:** Mapeo de alternativas cuando una máquina está ocupada (`exercise_substitutes`).
+- **Catalogación Completa:** Clasificación por grupo muscular objetivo/secundario, equipamiento utilizado y partes del cuerpo.
+
+### 🥗 Nutrición y Hábitos
+- **Consumo de Agua:** Registro de hidratación diaria y meta personal (`water_intake_ml`, `water_target_ml`).
+- **Checklist de Suplementación:** Seguimiento diario de toma de suplementos (`daily_supplement_logs`).
+- **Banco de Recetas:** Combinación fija de alimentos/ingredientes para registro en un solo bloque.
+- **Metas Nutricionales:** Objetivos de calorías y macronutrientes por tipo de día.
+
+### 💤 Recuperación y Fatiga
+- **Sueño y Energía:** Registro al despertar en escala 1 a 5 de calidad de descanso y fatiga acumulada.
+- **Dolores Articulares:** Bitácora de molestias por zona (`shoulder_left`, `knee_right`, `lumbar`) e intensidad de dolor (1-10).
+
+---
+
+## 🛠️ Stack Tecnológico
+
+- **Framework:** Laravel 11 (PHP 8.3)
+- **Base de Datos:** PostgreSQL 16 (con extensión `uuid-ossp`)
+- **Autenticación:** Laravel Sanctum
+- **Entorno de Desarrollo:** Docker & Laravel Sail (`./sail`)
 
 ---
 
 ## 🚀 Instalación y Arranque (Entorno de Desarrollo)
 
+### 📋 Requisitos Previos
+
+1. **Docker Desktop:** Instalado y activo (recomendado con integración WSL2 en Windows).
+2. **Git:** Para clonar el repositorio.
+
+---
+
 ### 1. Clonar el repositorio
 
-> **⚠️ IMPORTANTE:** Si usas WSL, asegúrate de clonar el proyecto dentro del sistema de archivos de Linux (ej. `~/projects/`), NO en el disco compartido de Windows (`/mnt/c/...`). Hacerlo en Windows destruirá el rendimiento de los contenedores Docker.
-
 ```bash
-# Clonar el repositorio
-git clone https://github.com/tu-usuario/fitter.git
-
-# Entrar al directorio
-cd fitter
+git clone https://github.com/tu-usuario/Fitter.git
+cd Fitter
 ```
-
-### 2. Levantar el entorno con Docker Compose
-
-El proyecto incluye un entorno pre-configurado. En la raíz del proyecto, ejecuta:
-
-```bash
-docker compose up --build
-```
-
-> **💡 Nota:** Usa la bandera `--build` siempre que agregues nuevas dependencias en el `package.json` para que Docker reconstruya las imágenes adecuadamente.
-
-### 3. Acceder a la aplicación
-
-Una vez que los contenedores estén corriendo, los servicios estarán disponibles en:
-
-- 📱 **Frontend (React PWA):** [http://localhost:5173](http://localhost:5173)
-- 🔌 **Backend (API Node):** [http://localhost:3000](http://localhost:3000)
-- 💽 **Base de datos Local (MongoDB):** `mongodb://127.0.0.1:27017/fitter`
 
 ---
 
-## 🧩 Extensiones Recomendadas para VS Code
+### 2. Configurar Variables de Entorno
 
-Para la mejor experiencia de desarrollo manejando WSL y contenedores, se recomienda instalar las siguientes extensiones:
+Copia el archivo de ejemplo `.env.example` a `.env`:
 
-| Extensión | Descripción |
-|-----------|-------------|
-| **[WSL](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl)** | Permite editar el código alojado en Linux nativamente desde Windows. |
-| **[Docker](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker)** | Gestiona los contenedores, imágenes y revisa logs fácilmente. |
-| **[MongoDB for VS Code](https://marketplace.visualstudio.com/items?itemName=mongodb.mongodb-vscode)** | Visualiza los datos conectándote a `mongodb://127.0.0.1:27017/`. |
-| **[Error Lens](https://marketplace.visualstudio.com/items?itemName=usernamehw.errorlens)** | Muestra errores de tipado de TypeScript directo sobre la línea de código. |
-| **[Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)** | Formatea el código automáticamente al guardar. |
-| **[ES7+ React/Redux/React-Native snippets](https://marketplace.visualstudio.com/items?itemName=dsznajder.es7-react-js-snippets)** | Acelera la creación de componentes escribiendo comandos rápidos como `rfce`. |
+```bash
+cp .env.example .env
+```
+
+Las variables principales de conexión a PostgreSQL ya vienen preconfiguradas para Sail:
+
+```env
+DB_CONNECTION=pgsql
+DB_HOST=pgsql
+DB_PORT=5432
+DB_DATABASE=fitter
+DB_USERNAME=sail
+DB_PASSWORD=password
+```
 
 ---
 
-## 🔧 Solución de Problemas Frecuentes
+### 3. Levantar los Contenedores con Laravel Sail
 
-<details>
-<summary><strong>1. Vite no detecta los cambios al guardar (Frontend)</strong></summary>
-
-<br>
-
-El archivo `docker-compose.yml` ya incluye `CHOKIDAR_USEPOLLING=true` para forzar a Vite a escuchar los cambios en los volúmenes de Docker. Si aún así falla, verifica que el proyecto esté alojado en el sistema de archivos de Linux (`~`).
-</details>
-
-<details>
-<summary><strong>2. Error en Docker: <code>ENOENT: no such file or directory, open '/app/package.json'</code></strong></summary>
-
-<br>
-
-Este error ocurre si alteras el orden de los `Dockerfile.dev`. Asegúrate de que las instrucciones estén en este estricto orden para aprovechar el caché:
-
-```dockerfile
-COPY package*.json ./
-RUN npm install
-COPY . .
-```
-</details>
-
-<details>
-<summary><strong>3. Conflictos al instalar paquetes desde la terminal de WSL</strong></summary>
-
-<br>
-
-Si comandos como `npm create` o `npm install` lanzan errores extraños de rutas hacia `C:\Users\...`, significa que WSL está usando el ejecutable de Node de tu Windows. Verifica que apunte a un directorio de NVM (`~/.nvm/...`) usando:
+Desde la raíz del proyecto, ejecuta el script wrapper `./sail`:
 
 ```bash
-which npm
+# Levantar servicios en segundo plano
+./sail up -d
 ```
-</details>
+
+> **💡 Nota:** En proyectos con Laravel Sail, nunca ejecutes `php artisan` en el host local. Utiliza siempre `./sail artisan <comando>`.
+
+---
+
+### 4. Ejecutar las Migraciones de Base de Datos
+
+Una vez que el contenedor de PostgreSQL esté listo, ejecuta las migraciones para crear las 27 tablas del modelo de datos:
+
+```bash
+./sail artisan migrate
+```
+
+---
+
+## 📡 Endpoints Principales (API)
+
+El servidor expone rutas bajo `/api/`:
+
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| `GET` | `/` | Estado general de la API y versión del servidor |
+| `GET` | `/api/health` | Healthcheck de conectividad |
+| `POST` | `/api/login` | Autenticación y emisión de Token Sanctum |
+| `GET` | `/api/user` | Datos del usuario autenticado |
+| `POST` | `/api/sync` | Endpoint de sincronización masiva para clientes offline-first |
+
+---
+
+## 🗄️ Modelo de Base de Datos (`Fitter.sql`)
+
+El esquema de la base de datos PostgreSQL se encuentra documentado e impulsado por las migraciones en [database/migrations/2026_09_06_000001_create_fitter_schema.php](file:///home/abdiel/projects/personal/Fitter/database/migrations/2026_09_06_000001_create_fitter_schema.php) y el archivo de referencia [Fitter.sql](file:///home/abdiel/projects/personal/Fitter/Fitter.sql).
+
+---
+
+## 📝 Registro de Cambios
+
+Consulta el archivo [CHANGELOG.md](file:///home/abdiel/projects/personal/Fitter/CHANGELOG.md) para ver la evolución del proyecto.

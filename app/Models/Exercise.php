@@ -1,0 +1,38 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Exercise extends Model
+{
+    use HasFactory, HasUuids;
+
+    protected $table = 'exercises';
+    public $timestamps = false;
+
+    protected $fillable = [
+        'user_id',
+        'external_id',
+        'name',
+        'gif_url',
+        'instructions',
+    ];
+
+    protected $casts = [
+        'instructions' => 'array',
+        'created_at' => 'datetime',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function substitutes()
+    {
+        return $this->hasMany(ExerciseSubstitute::class, 'exercise_id');
+    }
+}
