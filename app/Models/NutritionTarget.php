@@ -6,35 +6,33 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Workout extends Model
+class NutritionTarget extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $table = 'workout';
+    protected $table = 'nutrition_targets';
     public $timestamps = false;
 
     protected $fillable = [
         'user_id',
         'name',
-        'notes',
+        'calories_kcal',
+        'protein_g',
+        'carbs_g',
+        'fat_g',
+        'is_default',
     ];
 
     protected $casts = [
-        'created_at' => 'datetime',
+        'calories_kcal' => 'float',
+        'protein_g' => 'float',
+        'carbs_g' => 'float',
+        'fat_g' => 'float',
+        'is_default' => 'boolean',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function workoutExercises()
-    {
-        return $this->hasMany(WorkoutExercise::class, 'workout_id')->orderBy('order_in_routine');
-    }
-
-    public function workoutLogs()
-    {
-        return $this->hasMany(WorkoutLog::class);
     }
 }

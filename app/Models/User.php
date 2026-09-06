@@ -60,4 +60,29 @@ class User extends Authenticatable
     {
         return $this->hasMany(DailyHabitLog::class);
     }
+
+    public function nutritionTargets()
+    {
+        return $this->hasMany(NutritionTarget::class);
+    }
+
+    public function foodItems()
+    {
+        return $this->hasMany(FoodItem::class);
+    }
+
+    public function recipes()
+    {
+        return $this->hasMany(Recipe::class);
+    }
+
+    public function dailyFoodLogs()
+    {
+        return $this->hasMany(DailyFoodLog::class);
+    }
+
+    public function supplements()
+    {
+        return $this->hasMany(Supplement::class);
+    }
 }

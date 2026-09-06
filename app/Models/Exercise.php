@@ -35,4 +35,20 @@ class Exercise extends Model
     {
         return $this->hasMany(ExerciseSubstitute::class, 'exercise_id');
     }
+
+    public function bodyParts()
+    {
+        return $this->belongsToMany(BodyPart::class, 'exercise_body_parts');
+    }
+
+    public function equipments()
+    {
+        return $this->belongsToMany(Equipment::class, 'exercise_equipments');
+    }
+
+    public function muscles()
+    {
+        return $this->belongsToMany(Muscle::class, 'exercise_muscles')
+            ->withPivot('is_target');
+    }
 }

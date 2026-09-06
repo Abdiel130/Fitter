@@ -6,21 +6,17 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Workout extends Model
+class Recipe extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $table = 'workout';
+    protected $table = 'recipes';
     public $timestamps = false;
 
     protected $fillable = [
         'user_id',
         'name',
-        'notes',
-    ];
-
-    protected $casts = [
-        'created_at' => 'datetime',
+        'description',
     ];
 
     public function user()
@@ -28,13 +24,8 @@ class Workout extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function workoutExercises()
+    public function recipeItems()
     {
-        return $this->hasMany(WorkoutExercise::class, 'workout_id')->orderBy('order_in_routine');
-    }
-
-    public function workoutLogs()
-    {
-        return $this->hasMany(WorkoutLog::class);
+        return $this->hasMany(RecipeItem::class);
     }
 }
