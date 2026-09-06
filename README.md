@@ -19,16 +19,16 @@ El ecosistema de Fitter opera con una arquitectura **Offline-First**:
    - Persiste los datos localmente en el dispositivo.
 
 2. **Servidor API Backend (Este Repositorio):**
-   - **Autenticación:** Gestión segura de usuarios y sesiones vía Laravel Sanctum.
+   - **Autenticación:** Gestión segura de usuarios y tokens vía Laravel Sanctum.
    - **Sincronización & Respaldo CRUD:** Endpoint API unificado para respaldar la información del usuario en PostgreSQL y sincronizar cambios entre múltiples dispositivos sin pérdida de datos.
 
 ---
 
 ## 💡 Dominio del Proyecto y Funcionalidades Respaldadas
 
-El modelo de base de datos en PostgreSQL ([Fitter.sql](file:///home/abdiel/projects/personal/Fitter/Fitter.sql)) y el servidor API respaldan las siguientes áreas funcionales:
+El modelo de base de datos en PostgreSQL ([Fitter.sql](Fitter.sql)) y el servidor API respaldan las siguientes áreas funcionales:
 
-### 🏋️ Semanals Workouts (Rutinas & Secuencias Rotativas)
+### 🏋️ Semanal Workouts (Rutinas & Secuencias Rotativas)
 - **Secuencias Cíclicas:** Creación de rutinas compuestas por secuencias de días de entrenamiento (ej. PPL 4 Días con Enfoque Dorsal).
 - **Flexibilidad de Enfoques:** Alternancia entre secuencias semanales (ej. *Semana Enfoque Empuje* vs *Semana Enfoque Jale*).
 - **Puntero de Secuencia:** Seguimiento del día que corresponde en el ciclo (`active_sequence_index`).
@@ -60,39 +60,41 @@ El modelo de base de datos en PostgreSQL ([Fitter.sql](file:///home/abdiel/proje
 ## 🛠️ Stack Tecnológico
 
 - **Framework:** Laravel 11 (PHP 8.3)
-- **Base de Datos:** PostgreSQL 16 (con extensión `uuid-ossp`)
-- **Autenticación:** Laravel Sanctum
+- **Base de Datos:** PostgreSQL 16
+- **Autenticación:** Laravel Sanctum (tokens API)
 - **Entorno de Desarrollo:** Docker & Laravel Sail (`./sail`)
 
 ---
 
-## 🚀 Instalación y Arranque (Entorno de Desarrollo)
+## 🚀 Instalación desde cero (Entorno de Desarrollo)
 
 ### 📋 Requisitos Previos
 
-1. **Docker Desktop:** Instalado y activo (recomendado con integración WSL2 en Windows).
-2. **Git:** Para clonar el repositorio.
+1. **Docker Desktop** instalado y activo.
+   - En **Windows + WSL2**: activa la integración WSL en *Docker Desktop → Settings → Resources → WSL Integration* y marca tu distro (ej. Ubuntu). Sin esto, el comando `docker` no existe dentro de la distro y `./sail` fallará.
+2. **Git** para clonar el repositorio.
+3. No necesitas tener PHP, Composer ni PostgreSQL instalados en tu máquina: todo corre dentro de los contenedores.
 
 ---
 
 ### 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/tu-usuario/Fitter.git
+git clone git@github.com:Abdiel130/Fitter.git
 cd Fitter
 ```
 
 ---
 
-### 2. Configurar Variables de Entorno
+### 2. Configurar variables de entorno
 
-Copia el archivo de ejemplo `.env.example` a `.env`:
+Copia el archivo de ejemplo `.env.example` a `.env`. **Este archivo nunca se sube a git** (ver [Seguridad](#-seguridad-y-variables-de-entorno)):
 
 ```bash
 cp .env.example .env
 ```
 
-Las variables principales de conexión a PostgreSQL ya vienen preconfiguradas para Sail:
+Las variables de conexión a PostgreSQL ya vienen preconfiguradas para Sail:
 
 ```env
 DB_CONNECTION=pgsql
@@ -103,28 +105,86 @@ DB_USERNAME=sail
 DB_PASSWORD=password
 ```
 
+> `DB_PASSWORD=password` es válido solo para desarrollo local (el contenedor de Postgres no está expuesto a internet). Nunca reutilices este valor en un entorno real.
+
 ---
 
-### 3. Levantar los Contenedores con Laravel Sail
+### 3. Instalar las dependencias de Composer
 
-Desde la raíz del proyecto, ejecuta el script wrapper `./sail`:
+El repositorio aún no tiene `vendor/` (no se versiona). El script `./sail` incluido detecta esto automáticamente y levanta un contenedor temporal de Composer para instalar todo sin que necesites PHP en tu host:
 
 ```bash
-# Levantar servicios en segundo plano
+./sail composer install
+```
+
+---
+
+### 4. Levantar los contenedores
+
+Una vez existe `vendor/`, el wrapper `./sail` pasa a delegar en `vendor/bin/sail` (el binario real de Laravel Sail):
+
+```bash
 ./sail up -d
 ```
 
-> **💡 Nota:** En proyectos con Laravel Sail, nunca ejecutes `php artisan` en el host local. Utiliza siempre `./sail artisan <comando>`.
+> **💡 Nota:** En proyectos con Laravel Sail, nunca ejecutes `php artisan` ni `composer` directo en el host. Usa siempre `./sail artisan <comando>` y `./sail composer <comando>`.
 
 ---
 
-### 4. Ejecutar las Migraciones de Base de Datos
+### 5. Generar la clave de la aplicación
 
-Una vez que el contenedor de PostgreSQL esté listo, ejecuta las migraciones para crear las 27 tablas del modelo de datos:
+```bash
+./sail artisan key:generate
+```
+
+---
+
+### 6. Ejecutar las migraciones de base de datos
 
 ```bash
 ./sail artisan migrate
 ```
+
+---
+
+### 7. Verificar que todo funciona
+
+```bash
+curl http://localhost/api/health
+# {"status":"ok","timestamp":"..."}
+```
+
+---
+
+## 🧯 Comandos útiles
+
+| Comando | Descripción |
+|---|---|
+| `./sail up -d` | Levanta los contenedores en segundo plano |
+| `./sail down` | Detiene y elimina los contenedores |
+| `./sail artisan migrate:fresh` | Reinicia la base de datos desde cero |
+| `./sail artisan tinker` | Abre una consola interactiva de Laravel |
+| `./sail test` | Ejecuta la suite de tests |
+| `./sail logs -f` | Sigue los logs de los contenedores |
+
+---
+
+## 🩺 Mi IDE marca todo como error (Illuminate\... not found, etc.)
+
+Esto ocurre porque el autoload de PHP (`vendor/autoload.php`) y las clases del framework solo existen después de instalar las dependencias. Solución:
+
+1. Corre `./sail composer install` (paso 3 de arriba). Esto crea la carpeta `vendor/`.
+2. Recarga la ventana/proyecto de tu IDE (en VS Code: `Developer: Reload Window`) para que el servidor de PHP (Intelephense/PHP Intelephense/PHPStorm) reindexe.
+3. Si usas VS Code, instala la extensión **PHP Intelephense** y asegúrate de que la carpeta abierta sea la raíz del repo (donde está `composer.json`).
+
+Si después de esto persisten errores, corre `./sail composer dump-autoload` y vuelve a recargar el IDE.
+
+---
+
+## 🔒 Seguridad y variables de entorno
+
+- El `.env` **nunca** se versiona (está en `.gitignore`). Solo `.env.example` se sube al repositorio, con valores de ejemplo/no sensibles.
+- Si alguna vez un `.env` real llega a subirse por error a un repositorio público, considera **todas** las credenciales que contenía como comprometidas: regenera `APP_KEY` (`./sail artisan key:generate`), rota contraseñas de base de datos, tokens de terceros (AWS, mail, etc.) y **reescribe el historial de git** para eliminar el commit afectado antes de forzar el push.
 
 ---
 
@@ -134,20 +194,17 @@ El servidor expone rutas bajo `/api/`:
 
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|
-| `GET` | `/` | Estado general de la API y versión del servidor |
 | `GET` | `/api/health` | Healthcheck de conectividad |
-| `POST` | `/api/login` | Autenticación y emisión de Token Sanctum |
-| `GET` | `/api/user` | Datos del usuario autenticado |
-| `POST` | `/api/sync` | Endpoint de sincronización masiva para clientes offline-first |
+| `GET` | `/api/user` | Datos del usuario autenticado (requiere token Sanctum) |
 
 ---
 
-## 🗄️ Modelo de Base de Datos (`Fitter.sql`)
+## 🗄️ Modelo de Base de Datos
 
-El esquema de la base de datos PostgreSQL se encuentra documentado e impulsado por las migraciones en [database/migrations/2026_09_06_000001_create_fitter_schema.php](file:///home/abdiel/projects/personal/Fitter/database/migrations/2026_09_06_000001_create_fitter_schema.php) y el archivo de referencia [Fitter.sql](file:///home/abdiel/projects/personal/Fitter/Fitter.sql).
+El esquema de la base de datos PostgreSQL se encuentra documentado e impulsado por las migraciones en [database/migrations](database/migrations) y el archivo de referencia [Fitter.sql](Fitter.sql).
 
 ---
 
 ## 📝 Registro de Cambios
 
-Consulta el archivo [CHANGELOG.md](file:///home/abdiel/projects/personal/Fitter/CHANGELOG.md) para ver la evolución del proyecto.
+Consulta el archivo [CHANGELOG.md](CHANGELOG.md) para ver la evolución del proyecto.
