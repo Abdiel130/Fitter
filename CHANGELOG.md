@@ -7,7 +7,19 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 ---
 ## [Unreleased]
 
-## [1.1.0] - 10-09-2026
+## [1.2.0] - 11-09-2026
+### Security
+- **Actualización Mayor a Laravel 13.x:**
+  - Mitigación de vulnerabilidad de inyección CRLF en la validación de correos electrónicos (`CVE-2026-48019`).
+  - Mitigación de vulnerabilidad de confusión de rutas en URLs temporales firmadas (`Temporary Signed URL Path Confusion`).
+  - Actualización de paquetes del framework a sus versiones parcheadas y seguras (`laravel/framework: ^13.0`).
+  - Endurecimiento de seguridad en caché desactivando la deserialización arbitraria de clases no autorizadas (`serializable_classes: false` en `config/cache.php`).
+
+### Changed
+- **Entorno y Dependencias:**
+  - Elevado el requerimiento base de PHP a `^8.3` compatible con el runtime `sail-8.3/app`.
+  - Actualizadas las dependencias oficiales de soporte: `laravel/tinker: ^3.0`, `laravel/pail: ^1.2.5`, `nunomaduro/collision: ^8.6`, `phpunit/phpunit: ^12.0`.
+  - Verificado y asegurado el levantamiento del entorno de desarrollo completo bajo Docker Sail con PostgreSQL 16.
 ### Added
 - **Sistema de Autenticación de Doble Token (Offline-First):**
   - Implementación de flujo de sesión desacoplado para clientes móviles sin dependencia de conexión continua.
