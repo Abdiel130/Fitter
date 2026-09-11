@@ -3,7 +3,7 @@
 [![Laravel](https://img.shields.io/badge/Laravel-11.x-FF2D20?style=for-the-badge&logo=laravel)](https://laravel.com)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=for-the-badge&logo=postgresql)](https://www.postgresql.org)
 [![Docker Sail](https://img.shields.io/badge/Docker_Sail-Enabled-2496ED?style=for-the-badge&logo=docker)](https://laravel.com/docs/sail)
-[![SemVer](https://img.shields.io/badge/Version-1.0.0-blue?style=for-the-badge)](CHANGELOG.md)
+[![SemVer](https://img.shields.io/badge/Version-1.1.0-blue?style=for-the-badge)](CHANGELOG.md)
 
 **Fitter Server** es la API backend de autenticación, respaldo y sincronización para el ecosistema **Offline-First** de seguimiento de gimnasio, nutrición y hábitos.
 
@@ -195,7 +195,12 @@ El servidor expone rutas bajo `/api/`:
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|
 | `GET` | `/api/health` | Healthcheck de conectividad |
-| `GET` | `/api/user` | Datos del usuario autenticado (requiere token Sanctum) |
+| `POST` | `/api/auth/login` | Inicio de sesión (emite access & refresh tokens) |
+| `POST` | `/api/auth/refresh` | Renovación de tokens con biometría (rotación estricta) |
+| `POST` | `/api/auth/logout` | Cierre de sesión y revocación de tokens del dispositivo |
+| `GET` | `/api/auth/me` | Datos del usuario autenticado (alias `/api/user`) |
+
+> 📖 **Documentación detallada de autenticación y biometría para Android:** Consulta [docs/session.md](docs/session.md).
 
 ---
 
