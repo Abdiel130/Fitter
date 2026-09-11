@@ -5,10 +5,25 @@ Todos los cambios notables en este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/), y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
-## [unrelease]
+## [Unreleased]
+
+## [1.1.0] - 10-09-2026
+### Added
+- **Sistema de Autenticación de Doble Token (Offline-First):**
+  - Implementación de flujo de sesión desacoplado para clientes móviles sin dependencia de conexión continua.
+  - Emisión de tokens de acceso (vigencia de 30 días) para sincronizaciones habituales de rutinas y entrenamientos.
+  - Emisión de tokens de renovación de larga duración (vigencia de 180 días) para desbloqueo mediante biometría local en el dispositivo.
+  - Mecanismo de rotación estricta de credenciales en cada renovación para mitigar ataques de repetición y sesiones comprometidas.
+  - Soporte nativo para identificadores UUID en la persistencia de tokens de acceso personal en base de datos.
+  - Endpoints dedicados para inicio de sesión, renovación de credenciales, cierre de sesión selectivo por dispositivo y consulta del perfil activo.
+- **Estandarización Global de Respuestas API:**
+  - Unificación de todas las respuestas JSON bajo un contrato booleano predecible (`success: true|false`), acompañadas de mensaje descriptivo y carga útil o desglose de errores.
+  - Tipado estricto en respuestas y eliminación de códigos de estado numéricos mágicos mediante catálogos semánticos.
+  - Normalización automática de errores del framework (validación de formularios, accesos no autorizados y rutas no encontradas) para que siempre respeten el mismo formato ante el cliente móvil.
+- **Documentación Técnica de Sesión y Biometría Móvil:**
+  - Guía integral de integración para Android que cubre el almacenamiento seguro de credenciales en hardware (*Keystore*), integración con el sensor biométrico y recuperación transparente de solicitudes de sincronización interrumpidas.
 
 ## [1.0.0] - 06-09-2026
-
 ### Added
 - **Pivote Completo de Arquitectura:** Transición del repositorio a Servidor API de Autenticación y Sincronización (**Sync & Backup Server**) en **Laravel 11** + **PostgreSQL 16**.
 - **Entorno Docker Sail:** Configuración de `docker-compose.yml` y script wrapper `./sail` para desarrollo local en Docker con soporte nativo de PostgreSQL (`pgsql`).
