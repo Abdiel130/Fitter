@@ -1,9 +1,9 @@
 # 🏋️ Fitter - Sync & Backup Server API (Laravel + PostgreSQL)
 
-[![Laravel](https://img.shields.io/badge/Laravel-11.x-FF2D20?style=for-the-badge&logo=laravel)](https://laravel.com)
+[![Laravel](https://img.shields.io/badge/Laravel-13.x-FF2D20?style=for-the-badge&logo=laravel)](https://laravel.com)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=for-the-badge&logo=postgresql)](https://www.postgresql.org)
 [![Docker Sail](https://img.shields.io/badge/Docker_Sail-Enabled-2496ED?style=for-the-badge&logo=docker)](https://laravel.com/docs/sail)
-[![SemVer](https://img.shields.io/badge/Version-1.1.0-blue?style=for-the-badge)](CHANGELOG.md)
+[![SemVer](https://img.shields.io/badge/Version-1.2.0-blue?style=for-the-badge)](CHANGELOG.md)
 
 **Fitter Server** es la API backend de autenticación, respaldo y sincronización para el ecosistema **Offline-First** de seguimiento de gimnasio, nutrición y hábitos.
 
@@ -59,7 +59,7 @@ El modelo de base de datos en PostgreSQL ([Fitter.sql](Fitter.sql)) y el servido
 
 ## 🛠️ Stack Tecnológico
 
-- **Framework:** Laravel 11 (PHP 8.3)
+- **Framework:** Laravel 13 (PHP 8.3)
 - **Base de Datos:** PostgreSQL 16
 - **Autenticación:** Laravel Sanctum (tokens API)
 - **Entorno de Desarrollo:** Docker & Laravel Sail (`./sail`)
