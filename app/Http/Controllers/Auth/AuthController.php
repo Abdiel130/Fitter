@@ -50,14 +50,7 @@ class AuthController {
         return Api::response()->success(
             message: 'Inicio de sesión exitoso.',
             data: [
-                'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'current_routine' => $user->current_routine,
-                    'active_sequence_index' => $user->active_sequence_index,
-                    'created_at' => $user->created_at,
-                ],
+                'user' => $user->toProfileArray(),
                 'tokens' => [
                     'token_type' => 'Bearer',
                     'access_token' => $accessToken->plainTextToken,
@@ -156,12 +149,7 @@ class AuthController {
         return Api::response()->success(
             data: [
                 'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'current_routine' => $user->current_routine,
-                    'active_sequence_index' => $user->active_sequence_index,
-                    'created_at' => $user->created_at,
+                    ...$user->toProfileArray(),
                     'current_routine_details' => $user->currentRoutine,
                 ],
             ]

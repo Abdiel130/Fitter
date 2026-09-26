@@ -6,6 +6,24 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 ## [Unreleased]
+### Added
+- **Perfil de Usuario:**
+  - Consulta de los datos básicos del perfil del usuario autenticado.
+  - Seguimiento del asistente de configuración inicial de 5 pasos: el servidor registra cuándo el usuario lo completó, y el cliente puede saber desde el inicio de sesión si debe mostrarlo o no.
+  - El cliente puede marcar la configuración como completada (o reiniciarla para volver a mostrar el asistente). Repetir la acción es seguro y conserva la fecha original, lo que permite reintentarla tras sincronizaciones sin conexión.
+- **Alta de Cuentas Privada:**
+  - Creación de cuentas exclusivamente desde el servidor, sin registro público abierto a internet, acorde al uso personal de la aplicación.
+  - Contraseñas robustas obligatorias (mínimo 12 caracteres con mayúsculas, minúsculas y números) y correos únicos sin distinción de mayúsculas.
+- **Documentación Técnica:**
+  - Guía del perfil y la configuración inicial, con flujo recomendado de integración en Android bajo el enfoque Offline-First.
+  - Guía de creación y administración de cuentas.
+
+### Changed
+- Los datos del usuario se devuelven con la misma estructura en inicio de sesión, consulta de sesión y perfil.
+- Las fechas del usuario ahora usan el mismo formato ISO 8601 que las fechas de expiración de los tokens.
+
+### Fixed
+- Usar un token sin los permisos necesarios (por ejemplo, un token de renovación en rutas operativas) devolvía un error fuera del formato estándar y exponía detalles internos del servidor en modo depuración. Ahora responde con el contrato de error habitual.
 
 ## [1.2.0] - 11-09-2026
 ### Security

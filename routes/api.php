@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Profile\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -33,6 +34,12 @@ Route::prefix('auth')->group(function () {
 // Alias y rutas protegidas de sincronización para clientes offline-first
 Route::middleware(['auth:sanctum', 'ability:access-api'])->group(function () {
     Route::get('/user', [AuthController::class, 'me']);
+
+    // Perfil del usuario y estado del asistente de configuración inicial
+    Route::prefix('profile')->group(function () {
+        Route::get('/', [ProfileController::class, 'show']);
+        Route::patch('/setup', [ProfileController::class, 'updateSetup']);
+    });
 
     // CRUD Sync routes for offline-first clients
     // Route::apiResource('routines', RoutineSyncController::class);

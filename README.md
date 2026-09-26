@@ -164,6 +164,7 @@ curl http://localhost/api/health
 | `./sail down` | Detiene y elimina los contenedores |
 | `./sail artisan migrate:fresh` | Reinicia la base de datos desde cero |
 | `./sail artisan tinker` | Abre una consola interactiva de Laravel |
+| `./sail artisan fitter:user:create` | Crea una cuenta de usuario (no hay registro público, ver [docs/accounts.md](docs/accounts.md)) |
 | `./sail test` | Ejecuta la suite de tests |
 | `./sail logs -f` | Sigue los logs de los contenedores |
 
@@ -199,8 +200,13 @@ El servidor expone rutas bajo `/api/`:
 | `POST` | `/api/auth/refresh` | Renovación de tokens con biometría (rotación estricta) |
 | `POST` | `/api/auth/logout` | Cierre de sesión y revocación de tokens del dispositivo |
 | `GET` | `/api/auth/me` | Datos del usuario autenticado (alias `/api/user`) |
+| `GET` | `/api/profile` | Perfil básico del usuario y estado de la configuración inicial |
+| `PATCH` | `/api/profile/setup` | Marca (o reinicia) la configuración inicial de 5 pasos |
 
-> 📖 **Documentación detallada de autenticación y biometría para Android:** Consulta [docs/session.md](docs/session.md).
+> 📖 **Documentación detallada:**
+> - Autenticación y biometría para Android: [docs/session.md](docs/session.md)
+> - Perfil y configuración inicial: [docs/profile.md](docs/profile.md)
+> - Alta de cuentas (sin registro público): [docs/accounts.md](docs/accounts.md)
 
 ---
 

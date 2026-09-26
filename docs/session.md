@@ -72,6 +72,8 @@ data class ApiResponse<T>(
 
 ## 3. Especificación de Endpoints
 
+> **Alta de cuentas:** no existe registro público. Las cuentas se crean desde el servidor con `./sail artisan fitter:user:create` (ver [accounts.md](accounts.md)).
+
 ### 3.1. Iniciar Sesión (`POST /api/auth/login`)
 Autentica al usuario mediante correo y contraseña. Emite el par de tokens (`access_token` y `refresh_token`) vinculados al dispositivo.
 
@@ -111,7 +113,9 @@ Autentica al usuario mediante correo y contraseña. Emite el par de tokens (`acc
       "email": "usuario@ejemplo.com",
       "current_routine": null,
       "active_sequence_index": 1,
-      "created_at": "2026-09-06T12:00:00.000000Z"
+      "is_setup_completed": false,
+      "setup_completed_at": null,
+      "created_at": "2026-09-06T12:00:00+00:00"
     },
     "tokens": {
       "token_type": "Bearer",
@@ -200,7 +204,7 @@ Renueva el `access_token` cuando éste ha expirado, utilizando el `refresh_token
 ```json
 {
   "success": false,
-  "message": "No autorizado. Se requiere un Refresh Token válido para esta operación."
+  "message": "No autorizado. El token no tiene permisos para esta operación."
 }
 ```
 
@@ -240,7 +244,7 @@ Revoca los tokens del dispositivo activo (o de todos los dispositivos si se espe
 ---
 
 ### 3.4. Obtener Perfil de Usuario (`GET /api/auth/me` o `GET /api/user`)
-Retorna los datos del usuario autenticado y los detalles de su rutina activa.
+Retorna los datos del usuario autenticado y los detalles de su rutina activa. Los campos `is_setup_completed` / `setup_completed_at` se describen en [profile.md](profile.md).
 
 * **Método:** `GET`
 * **URL:** `/api/auth/me` (alias: `/api/user`)
@@ -262,7 +266,9 @@ Retorna los datos del usuario autenticado y los detalles de su rutina activa.
       "email": "usuario@ejemplo.com",
       "current_routine": "6a3feb12-2c5d-4f1e-9134-11e2f9d50123",
       "active_sequence_index": 2,
-      "created_at": "2026-09-06T12:00:00.000000Z",
+      "is_setup_completed": true,
+      "setup_completed_at": "2026-09-06T12:10:00+00:00",
+      "created_at": "2026-09-06T12:00:00+00:00",
       "current_routine_details": {
         "id": "6a3feb12-2c5d-4f1e-9134-11e2f9d50123",
         "name": "PPL Hipertrofia 4 Días",

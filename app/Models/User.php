@@ -21,6 +21,7 @@ class User extends Authenticatable
         'password',
         'current_routine',
         'active_sequence_index',
+        'setup_completed_at',
     ];
 
     protected $hidden = [
@@ -28,8 +29,35 @@ class User extends Authenticatable
     ];
 
     protected $casts = [
+        'active_sequence_index' => 'integer',
+        'setup_completed_at' => 'datetime',
         'created_at' => 'datetime',
     ];
+
+    /**
+     * El asistente de configuración inicial se considera completado cuando existe setup_completed_at.
+     */
+    public function isSetupCompleted(): bool
+    {
+        return $this->setup_completed_at !== null;
+    }
+
+    /**
+     * Datos básicos del perfil expuestos al cliente (login, /auth/me, /profile).
+     */
+    public function toProfileArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'email' => $this->email,
+            'current_routine' => $this->current_routine,
+            'active_sequence_index' => $this->active_sequence_index,
+            'is_setup_completed' => $this->isSetupCompleted(),
+            'setup_completed_at' => $this->setup_completed_at?->toIso8601String(),
+            'created_at' => $this->created_at?->toIso8601String(),
+        ];
+    }
 
     public function currentRoutine()
     {

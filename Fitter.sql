@@ -5,6 +5,7 @@ CREATE TABLE `users` (
   `password` varchar(255) NOT NULL,
   `current_routine` uuid COMMENT 'Rutina/Split actualmente en curso',
   `active_sequence_index` int DEFAULT 1 COMMENT 'Puntero al order_index que toca hoy (1, 2, 3...)',
+  `setup_completed_at` timestamp COMMENT 'Momento en que se completó la configuración inicial (5 pasos). NULL = pendiente',
   `created_at` timestamp DEFAULT (now())
 );
 
