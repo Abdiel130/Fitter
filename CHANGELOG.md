@@ -13,10 +13,11 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
   - El cliente puede marcar la configuración como completada (o reiniciarla para volver a mostrar el asistente). Repetir la acción es seguro y conserva la fecha original, lo que permite reintentarla tras sincronizaciones sin conexión.
 - **Alta de Cuentas Privada:**
   - Creación de cuentas exclusivamente desde el servidor, sin registro público abierto a internet, acorde al uso personal de la aplicación.
-  - Contraseñas robustas obligatorias (mínimo 12 caracteres con mayúsculas, minúsculas y números) y correos únicos sin distinción de mayúsculas.
+  - Recuperación de contraseña desde el servidor, sin flujo público de restablecimiento. Por seguridad, al restablecerla se cierran las sesiones en todos los dispositivos.
+  - Contraseñas robustas obligatorias (mínimo 12 caracteres con mayúsculas, minúsculas y números) con la misma política para alta y recuperación, y correos únicos sin distinción de mayúsculas.
 - **Documentación Técnica:**
   - Guía del perfil y la configuración inicial, con flujo recomendado de integración en Android bajo el enfoque Offline-First.
-  - Guía de creación y administración de cuentas.
+  - Guía de creación de cuentas y recuperación de contraseñas.
 
 ### Changed
 - Los datos del usuario se devuelven con la misma estructura en inicio de sesión, consulta de sesión y perfil.

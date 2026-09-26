@@ -38,7 +38,7 @@ class CreateUserCommand extends Command {
             [
                 'name' => ['required', 'string', 'max:100'],
                 'email' => ['required', 'string', 'email', 'max:150', 'unique:users,email'],
-                'password' => ['required', 'confirmed', Password::min(12)->mixedCase()->numbers()],
+                'password' => ['required', 'confirmed', Password::defaults()],
             ]
         );
 
